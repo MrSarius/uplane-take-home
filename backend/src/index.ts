@@ -12,9 +12,8 @@ const PORT = process.env.PORT || 5001;
 // CORS configuration for production deployment
 const corsOptions = {
   origin: [
-    'http://localhost:3000', // Development frontend
-    'https://*.vercel.app',  // Vercel preview deployments
-    'https://*.vercel.app',  // Vercel production deployments
+    'http://localhost:3000', 
+    'https://uplane-take-home-um3s.vercel.app', 
   ],
   credentials: true,
   optionsSuccessStatus: 200
