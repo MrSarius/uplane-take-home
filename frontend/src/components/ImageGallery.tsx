@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { 
-  Paper, 
   Title, 
   Text, 
   Button, 
@@ -18,7 +17,6 @@ import {
   Box
 } from '@mantine/core';
 import { IconRefresh, IconTrash, IconExternalLink, IconAlertCircle, IconPhoto } from '@tabler/icons-react';
-import { modals } from '@mantine/modals';
 import { ImageData } from '../types/types';
 
 interface ImageGalleryProps {

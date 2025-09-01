@@ -46,10 +46,10 @@ export class ImageService {
 
       const processedBuffer = await this.removeBackgroundAndFlip(imageBuffer);
       
-      const processedPath = path.join(this.processedDir, `${imageId}_processed.jpg`);
-      await sharp(processedBuffer).jpeg().toFile(processedPath);
+      const processedPath = path.join(this.processedDir, `${imageId}_processed.png`);
+      await sharp(processedBuffer).toFile(processedPath);
 
-      return `/processed/${imageId}_processed.jpg`;
+      return `/processed/${imageId}_processed.png`;
 
     } catch (error) {
       console.error('Error processing image:', error);
@@ -66,8 +66,8 @@ export class ImageService {
           const backgroundRemovedBuffer = await this.callRemoveBgAPI(imageBuffer);
           
           processedBuffer = await sharp(backgroundRemovedBuffer)
-            .flop() // Horizontal flip
-            .jpeg()
+            .flop() 
+            .png()
             .toBuffer();
           
           console.log('Successfully processed image with Remove.bg API');
@@ -89,11 +89,6 @@ export class ImageService {
 
   private async callRemoveBgAPI(imageBuffer: Buffer): Promise<Buffer> {
     try {
-      console.log('Calling Remove.bg API with key:', this.removeBgApiKey ? `${this.removeBgApiKey.substring(0, 8)}...` : 'undefined');
-      console.log('Request URL:', 'https://api.remove.bg/v1.0/removebg');
-      console.log('Image buffer size:', imageBuffer.length, 'bytes');
-      console.log('Content-Type header:', 'application/octet-stream');
-      
       if (imageBuffer.length > 12 * 1024 * 1024) { // 12MB limit
         throw new Error('Image is too large. Remove.bg API supports images up to 12MB.');
       }
@@ -108,8 +103,6 @@ export class ImageService {
         contentType: 'image/jpeg'
       });
       
-      console.log('Using FormData with image file');
-      
       const response = await axios.post('https://api.remove.bg/v1.0/removebg', form, {
         headers: {
           'X-Api-Key': this.removeBgApiKey,
@@ -119,7 +112,7 @@ export class ImageService {
         timeout: 30000, // 30 second timeout
       });
 
-            if (response.status === 200) {
+      if (response.status === 200) {
         return Buffer.from(response.data as ArrayBuffer);
       } else {
         throw new Error(`Remove.bg API returned status ${response.status}`);
@@ -152,7 +145,7 @@ export class ImageService {
   private async basicImageProcessing(imageBuffer: Buffer): Promise<Buffer> {
     return await sharp(imageBuffer)
       .flop()
-      .jpeg()
+      .png()
       .toBuffer();
   }
 
@@ -198,7 +191,7 @@ export class ImageService {
       const image = images[imageIndex];
       
       const originalPath = path.join(this.uploadsDir, `${id}_original.jpg`);
-      const processedPath = path.join(this.processedDir, `${id}_processed.jpg`);
+      const processedPath = path.join(this.processedDir, `${id}_processed.png`);
       
       [originalPath, processedPath].forEach(filePath => {
         if (fs.existsSync(filePath)) {
